@@ -1,60 +1,55 @@
 import tkinter as tk
-from geopy.geocoders import Nominatim
-import pycountry
+from tkinter import ttk
+from tkinter import messagebox
 import time
-import datetime
 
-def greet():
-    name = name_entry.get()
-    location_name = location_entry.get()
+class GreetApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Greet App")
+        self.root.configure(background='#2C001E')
+        self.root.geometry("800x600")
 
-    geolocator = Nominatim(user_agent="greeting_app")
-    location = geolocator.geocode(location_name)
+        self.label_name = ttk.Label(self.root, text="Name:", font=("TkDefaultFont", 16), foreground='white', background='#2C001E')
+        self.label_name.grid(row=0, column=0, padx=10, pady=10)
 
-    country_code = location.raw.get("address", {}).get("country_code", "")
-    if country_code:
-        country = pycountry.countries.get(alpha_2=country_code)
-        language_code = country.languages[0].iso639_1
-        language = pycountry.languages.get(iso639_1=language_code).name
-    else:
-        t = time.localtime()
-        current_time = time.strftime("%H:%M:%S", t)
-        current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-        location = geolocator.reverse(f"{location.latitude}, {location.longitude}", exactly_one=True)
-        country_code = location.raw.get("address", {}).get("country_code", "")
-        country = pycountry.countries.get(alpha_2=country_code)
-        language_code = country.languages[0].iso639_1
-        language = pycountry.languages.get(iso639_1=language_code).name
+        self.entry_name = ttk.Entry(self.root, font=("TkDefaultFont", 16))
+        self.entry_name.grid(row=0, column=1, padx=10, pady=10)
+        self.entry_name.focus()
 
-    if language == "English":
-        greeting = f"Hello, {name} from {location_name}!"
-    elif language == "German":
-        greeting = f"Hallo, {name} aus {location_name}!"
-    elif language == "Spanish":
-        greeting = f"Hola, {name} de {location_name}!"
-    else:
-        greeting = f"Hello, {name} from {location_name} in {language}!"
+        self.label_location = ttk.Label(self.root, text="Location:", font=("TkDefaultFont", 16), foreground='white', background='#2C001E')
+        self.label_location.grid(row=1, column=0, padx=10, pady=10)
 
-    greeting_label.config(text=greeting)
+        self.entry_location = ttk.Entry(self.root, font=("TkDefaultFont", 16))
+        self.entry_location.grid(row=1, column=1, padx=10, pady=10)
 
-root = tk.Tk()
-root.tk.call('tk', 'scaling', 4.0)
-root.title("Greeting App")
+        self.button_greet = ttk.Button(self.root, text="Greet", command=self.greet)
+        self.button_greet.grid(row=2, column=1, pady=10)
+        
+        self.root.bind('<Return>', self.greet)
 
-name_label = tk.Label(root, text="Enter your name:")
-name_entry = tk.Entry(root)
+        self.var_dark_mode = tk.IntVar()
+        self.checkbutton_dark_mode = ttk.Checkbutton(self.root, text="Dark Mode", variable=self.var_dark_mode, command=self.toggle_dark_mode)
+        self.checkbutton_dark_mode.grid(row=3, column=0, columnspan=2, pady=10)
 
-location_label = tk.Label(root, text="Enter your location:")
-location_entry = tk.Entry(root)
+    def greet(self, event=None):
+        name = self.entry_name.get()
+        location = self.entry_location.get()
+        current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+        message = "Hello {}, from {}. Today is {}".format(name, location, current_time)
+        messagebox.showinfo("Greeting", message)
+        
+    def toggle_dark_mode(self):
+        is_dark_mode = self.var_dark_mode.get()
+        if is_dark_mode:
+            self.root.configure(background='#2C001E')
+            self.label_name.configure(foreground='white', background='#2C001E')
+            self.label_location.configure(foreground='white', background='#2C001E')
+        else:
+            self.root.configure(background='white')
 
-greeting_button = tk.Button(root, text="Greet", command=greet)
-greeting_label = tk.Label(root, text="")
 
-name_label.pack()
-name_entry.pack()
-location_label.pack()
-location_entry.pack()
-greeting_button.pack()
-greeting_label.pack()
-
-root.mainloop()
+if __name__ == '__main__':
+    root = tk.Tk()
+    app = GreetApp(root)
+    root.mainloop()
