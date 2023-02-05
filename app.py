@@ -25,8 +25,10 @@ class GreetingApp:
         self.greet_button = tk.Button(self.button_frame, text="Greet", font=("Arial", 14), command=self.greet_user)
         self.greet_button.grid(row=0, column=0, padx=10, pady=10)
 
-        self.quit_button = tk.Button(self.button_frame, text="Quit", font=("Arial", 14), command=self.root.quit)
+        self.quit_button = tk.Button(self.button_frame, text="Quit", font=("Arial", 14), command=self.quit_app)
         self.quit_button.grid(row=0, column=1, padx=10, pady=10)
+
+        self.root.bind("<Escape>", self.quit_app)
 
     def greet_user(self, event=None):
         name = self.name_entry.get().strip()
@@ -40,6 +42,13 @@ class GreetingApp:
             messagebox.showinfo("Greeting", greet)
         except Exception as error:
             messagebox.showerror("Error", str(error))
+
+    def quit_app(self, event=None):
+        result = messagebox.askyesno("Quit", "Are you sure you want to quit the app?")
+        if result:
+            self.root.quit()
+        else:
+            return
 
 if __name__ == "__main__":
     root = tk.Tk()
