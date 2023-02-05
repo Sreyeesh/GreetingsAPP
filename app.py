@@ -37,7 +37,7 @@ class GreetingApp:
                 raise ValueError("Please enter your name to continue")
             g = geocoder.ip('me')
             location = g.city + ", " + g.state
-            current_time = time.strftime("%I:%M %p")
+            current_time = time.strftime("%H:%M")
             greet = f"Hello {name}, it is currently {current_time} in {location}"
             messagebox.showinfo("Greeting", greet)
         except Exception as error:
@@ -48,7 +48,7 @@ class GreetingApp:
         if result:
             self.root.quit()
         else:
-            return
+            pass
 
 if __name__ == "__main__":
     root = tk.Tk()
