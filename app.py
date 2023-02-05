@@ -1,7 +1,7 @@
 import tkinter as tk
-from tkinter import messagebox
-import time
 import geocoder
+import time
+from tkinter import messagebox
 
 class GreetingApp:
     def __init__(self, root):
